@@ -1,0 +1,17 @@
+"Window": {		
+	backgroundColor: "#ffffff"
+}
+
+"Button": {
+	color: "#000000",
+	width: Ti.UI.FILL,
+	top: "10dp", left:"10dp", right: "10dp"
+}
+
+"TextField": {
+	color: "#000000"
+}
+
+"Label": {
+	color: "#000000"
+}

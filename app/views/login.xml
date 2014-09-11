@@ -1,0 +1,18 @@
+<Alloy>	
+	<Window title="Вход">
+		<View layout='vertical'>
+			<LoginButton id="fbButton" ns="Alloy.Globals.Facebook" />
+			<Label>или</Label>	
+			<TextField id="loginField" class="credentialField" hintText="E-mail" maxLength="50"
+				autocorrect="false" 
+				/>
+			<TextField id="passwordField" class="credentialField" hintText="Пароль" maxLength="30"				
+				autocorrect="false"
+				clearOnEdit="true"
+				passwordMask="true"
+				/>	
+			<Label>Login: test or test@test.com\nPassword:test</Label>		
+			<Button id="submitButton" onClick="doCloudLogin">Войти</Button>
+		</View>
+	</Window>	
+</Alloy>

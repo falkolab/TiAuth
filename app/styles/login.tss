@@ -1,0 +1,11 @@
+".credentialField": {
+	width: Ti.UI.FILL,		
+	top: "10dp", left:"10dp", right: "10dp"
+}
+
+"#fbButton": {
+	style: Alloy.Globals.Facebook.BUTTON_STYLE_WIDE
+}
+
+"#fbButton[if=Alloy.Globals.Facebook.loggedIn]": {
+}

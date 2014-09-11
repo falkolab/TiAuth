@@ -150,7 +150,7 @@ exports.loginRequired = function(nextAction, loginAction, context) {
         }
         return true;
     }        
-    Ti.API.info('>'+JSON.stringify(currentUser));
+    
     return false;
 }; 
 
