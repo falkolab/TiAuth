@@ -1,7 +1,7 @@
 {
 	"global": {
 	   "auth": {
-            "providers": ["auth/providers/cloud", "auth/providers/facebook"]
+            "providers": ["auth/providers/acs", "auth/providers/facebook_acs"]
         }
 	}, 
 	"env:development": {}, 

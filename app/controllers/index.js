@@ -3,7 +3,7 @@ var Auth = require('auth/auth');
 $.logout.visible = Auth.user.isAuthenticated();
 $.login.visible = !$.logout.visible;
 
-function doLogin(e) {
+function doLogin() {
     if(!Auth.loginRequired()) {        
         $.logout.show();
         $.login.hide();
@@ -12,14 +12,21 @@ function doLogin(e) {
 }
 
 function doLogout() {
-    Auth.logout();
-    $.logout.hide();
-    $.login.show();
-    updateLabel();
+    Auth.logout().then(function(){
+        $.logout.hide();
+        $.login.show();
+        updateLabel();    
+    });
+    
 }
 
 function updateLabel() {
     $.label.text = String.format('Hello %s!', Auth.user.first_name || 'anonymous');    
+}
+
+function opened() {
+    $.logout.visible = Auth.user.isAuthenticated();
+    $.login.visible = !$.logout.visible;    
 }
 
 updateLabel();

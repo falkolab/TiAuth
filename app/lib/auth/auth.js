@@ -36,7 +36,7 @@ exports.init = function(cfg) {
     _.each(cfg.providers, function(providerName) {        
         try {
             var provider = require(providerName);
-            providers.push(provider);
+            providers.push(provider);            
         } catch(e) {            
             throw "Couldn't load provider " + providerName + ': ' + ((e.error && e.message) || JSON.stringify(e));                       
         }
@@ -55,29 +55,46 @@ exports.init = function(cfg) {
 };
 
 exports.authenticate = function authenticate(credentials) {
-    var last, credsOrig = _.clone(credentials);
-    for(var i=0, l=providers.length; i<l; i++) {
-        var provider = providers[i];
-        if(last) {
-            last = last.then(function(user) {
-                if(user) return user;
-                Q.reject({name:'TypeError'});                
-            }).fail(function(reason) {                
-                if(reason.name == 'TypeError') {
-                    //This provider doesn't accept these credential
-                    return provider.authenticate(credentials);
-                }
-                throw reason;                
-            });            
-        } else {
-            last = provider.authenticate(credentials);
-        }
+    var credsOrig = _.clone(credentials);
+    
+    function errorHandler(provider, reason) {                                     
+        Ti.API.info(provider.name + ' provider rejected with: ' + 
+            (_.isUndefined(reason) ? 'unknown' : 
+                (
+                (reason.error && reason.message) || (_.isEmpty(reason) && reason.name) || JSON.stringify(reason)
+                )
+            )
+         );              
+         
+        return Q.reject(reason);            
     }
     
-    return last.then(function authenticateSuccess(user) {
-        self.credentials = credsOrig;
-        return user;
-    });     
+    function successHandler(provider, user){            
+        if(!user) {
+            throw new Error("User is empty");
+        } else {
+            if(!(user instanceof BaseUser)) {                        
+                user = _.extend(new BaseUser(), user);                        
+            }                    
+            user.provider = provider;
+            Ti.API.info('Authenticated with: ' + (provider.name || 'unknown'));
+            return user;
+        }   
+    }
+        
+    return _.reduce(providers, function(last, provider) {
+        var authenticate = _.bind(provider.authenticate, provider, credentials),
+            success = _.partial(successHandler, provider),        
+            failure = _.partial(errorHandler, provider);
+        
+        return last.catch(function(reason) {
+            try {
+                return Q(authenticate()).then(success, failure);
+            } catch(e) {                
+                return failure(e);
+            }            
+        });       
+    }, Q.reject());
 };
 
 /*
@@ -155,8 +172,18 @@ exports.loginRequired = function(nextAction, loginAction, context) {
 }; 
 
 exports.logout = function logout() {
-    self.credentials = null;
-    currentUser = new AnonymousUser();
+    function logoutTask() {
+        self.credentials = null;
+        currentUser = new AnonymousUser();
+    }
+    
+    var pLogout = currentUser && currentUser.provider && currentUser.provider.logout;
+    if(_.isFunction(pLogout)) {
+        return Q(pLogout()).then(logoutTask);
+    } else {
+        logoutTask();
+        return true;
+    }    
 };
 
 exports.login = function login(user) {

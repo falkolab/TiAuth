@@ -2,6 +2,7 @@ var Auth = require('auth/auth');
 var args = arguments[0] || {};
 
 var loginFailure = function loginFailure(reason) {   
+    Ti.API.error(JSON.stringify(reason));
     
     Ti.UI.createAlertDialog({
             message : 'Login or password is incorrect',
@@ -55,23 +56,35 @@ fb.forceDialogAuth = false;
 
 var facebookLoginHandler = function(e) {    
     if (e.success) {        
-        Ti.API.info('Вошли в facebook успешно');     
-        
         Auth.authenticate({
             accessToken: fb.accessToken            
-        }).then(function facebookLoginSuccess(){
-            
-        }, loginFailure).fin(function facebookLoginFin() {
-                    
-        });
+        }).then(function facebookLoginSuccess(user){
+            Auth.login(user);
+            args.next();            
+        }, loginFailure);
     } else if (e.error) {
         loginFailure(e.error);
     } else if (e.cancelled) {
-        Ti.API.info("Пользователь отказался входить через Facebook");
+        Ti.API.info("User canceled Facebook login");
     }
 };
 
 fb.addEventListener('login', facebookLoginHandler);
+
+function doFacebookLogin() {
+    // prevent duplicate of 'login' event
+    fb.removeEventListener('login', facebookLoginHandler);
+    // force logout (only for this example) after tests with builtin LoginButton
+    if(fb.loggedIn) fb.logout();
+    
+    Auth.authenticate().then(function facebookLoginSuccess(user){
+        Auth.login(user);
+        args.next();            
+    }, loginFailure).fin(function(){
+        // resume 'login' event
+        fb.addEventListener('login', facebookLoginHandler);
+    });
+}
 
 //
 

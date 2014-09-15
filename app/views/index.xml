@@ -1,5 +1,5 @@
 <Alloy>
-	<Window class="container" layout="vertical">		
+	<Window class="container" layout="vertical" onOpen="opened">		
 		<Label id="label" top="50"></Label>
 		<Button id="login" top="50" onClick="doLogin">Click to login</Button>
 		<Button id="logout" top="50" onClick="doLogout" visible="false">Logout</Button>		

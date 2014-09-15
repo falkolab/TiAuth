@@ -2,7 +2,9 @@
 	<Window title="Вход">
 		<View layout='vertical'>
 			<LoginButton id="fbButton" ns="Alloy.Globals.Facebook" />
-			<Label>или</Label>	
+			<Label>or</Label>	
+			<Button id="fbCustomButton" onClick="doFacebookLogin">Login with FB Custom Button</Button>
+			<Label>or</Label>
 			<TextField id="loginField" class="credentialField" hintText="E-mail" maxLength="50"
 				autocorrect="false" 
 				/>
@@ -12,7 +14,7 @@
 				passwordMask="true"
 				/>	
 			<Label>Login: test or test@test.com\nPassword:test</Label>		
-			<Button id="submitButton" onClick="doCloudLogin">Войти</Button>
+			<Button id="submitButton" onClick="doCloudLogin">Login with ACS</Button>
 		</View>
 	</Window>	
 </Alloy>
