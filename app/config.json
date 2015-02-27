@@ -1,7 +1,8 @@
 {
 	"global": {
-	   "auth": {
-            "providers": ["auth/providers/acs", "auth/providers/facebook_acs"]
+	   "TiAuth": {
+            "providers": ["auth/providers/acs", "auth/providers/facebook_acs"],
+            "Q": "q"
         }
 	}, 
 	"env:development": {}, 

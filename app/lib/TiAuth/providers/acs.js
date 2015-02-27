@@ -1,7 +1,8 @@
 var _ = require('alloy/underscore')._,
-    Q = require('q'),
-    Cloud = require('ti.cloud'),
-    Auth = require('auth/auth');
+    Cloud = require('ti.cloud');
+    
+var Q; try {Q = require('q');} catch(e) { Q = require(Alloy.CFG.TiAuth.lib.Q);}
+
     
 var ERRORS = {
     401: L('incorrect_login_or_password') || 'Login or password is incorrect'

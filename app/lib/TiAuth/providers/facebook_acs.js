@@ -1,7 +1,9 @@
 var _ = require('alloy/underscore')._,
-    Q = require('q'),
     Cloud = require('ti.cloud');
     fb = require('facebook');
+    
+var Q; try {Q = require('q');} catch(e) { Q = require(Alloy.CFG.TiAuth.lib.Q);}
+
         
 var ERRORS = {};
 
